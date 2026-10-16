@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\AdminPoliController;
 use App\Http\Controllers\Admin\DokterController;
 use App\Http\Controllers\Admin\PasienController;
 use App\Http\Controllers\Admin\ObatController;
+use App\Http\Controllers\Dokter\JadwalPeriksaController;
 use Illuminate\Support\Facades\Route;
 
 
