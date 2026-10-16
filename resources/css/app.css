@@ -1,13 +1,95 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 
-@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
-@source '../../storage/framework/views/*.php';
-@source '../**/*.blade.php';
-@source '../**/*.js';
-@source '../../resources/views/**/*.blade.php';
-@source '../../resources/**/*.js';
+/* 1. Plugin DaisyUI */
+@plugin "daisyui";
 
+/* 2. Custom Theme Variables & Fonts */
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans: 'Figtree', 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+    --font-serif: 'Instrument Serif', serif;
+    --sidebar-w: 260px;
+}
+
+/* 3. Custom Utilities & Component Styles */
+@utility brand-serif {
+    font-family: var(--font-serif);
+}
+
+@utility app-wrapper {
+    display: flex;  
+    min-height: 100vh;
+}
+
+@utility main-content {
+    flex: 1 1 0%;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    min-width: 0;
+}
+
+@utility main-scroll {
+    flex: 1 1 0%;
+    padding: 28px;
+}
+
+@utility sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background-color: rgb(0 0 0 / 0.45);
+    z-index: 39;
+    backdrop-filter: blur(2px);
+}
+
+@utility btn-primary-gradient {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 13px;
+    color: #fff;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    transition: all 0.15s;
+    border: none;
+    cursor: pointer;
+    background: linear-gradient(135deg, #1e2d6b, #2d4499);
+}
+
+.btn-primary-gradient:hover {
+    background: linear-gradient(135deg, #162156, #1e2d6b);
+}
+
+/* 4. Custom Class Styles */
+body {
+    background-color: #f1f5f9;
+    font-family: var(--font-sans);
+}
+
+.sidebar-fixed {
+    width: var(--sidebar-w);
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    flex-shrink: 0;
+    z-index: 40;
+    overflow: hidden;
+    background: linear-gradient(160deg, #1e2d6b 0%, #2d4499 60%, #1a2d7a 100%);
+    box-shadow: 4px 0 24px rgba(30, 45, 107, 0.35);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (max-width: 1024px) {
+    .sidebar-fixed {
+        position: fixed;
+        left: 0;
+        transform: translateX(-100%);
+    }
+
+    .sidebar-fixed.open {
+        transform: translateX(0);
+    }
 }
