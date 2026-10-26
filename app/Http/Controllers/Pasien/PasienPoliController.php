@@ -9,7 +9,7 @@ use App\Models\Poli;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class PoliController extends Controller
+class PasienPoliController extends Controller
 {
     public function get()
     {

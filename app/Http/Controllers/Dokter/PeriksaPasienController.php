@@ -16,7 +16,7 @@ class PeriksaPasienController extends Controller
     {
         $dokterId = Auth::id();
 
-        $daftarPasien = DaftarPoli::with(['pasien', 'jadwalPeriksa', 'periksas'])
+        $daftarPasien = DaftarPoli::with(['user', 'jadwalPeriksa', 'periksas'])
             ->whereHas('jadwalPeriksa', function ($query) use ($dokterId) {
                 $query->where('id_dokter', $dokterId);
             })

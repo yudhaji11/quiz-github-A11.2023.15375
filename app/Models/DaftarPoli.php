@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
 
 class DaftarPoli extends Model
 {
@@ -15,9 +16,16 @@ class DaftarPoli extends Model
         'no_antrian'
     ];
 
+    // Ganti atau tambahkan method pasien()
     public function pasien()
     {
-        return $this->belongsTo(Pasien::class, 'id_pasien');
+        return $this->belongsTo(User::class, 'id_pasien');
+    }
+
+    // Tetap simpan jika ada bagian lain yang terlanjur memanggil $daftarPoli->user
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'id_pasien');
     }
 
     public function jadwalPeriksa()
