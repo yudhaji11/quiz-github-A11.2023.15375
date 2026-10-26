@@ -10,6 +10,9 @@ use App\Http\Controllers\Dokter\JadwalPeriksaController;
 use App\Http\Controllers\Dokter\PeriksaPasienController;
 use App\Http\Controllers\Dokter\RiwayatPasienController;
 use App\Http\Controllers\Pasien\PasienPoliController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ExportController;
+use App\Http\Controllers\Pasien\RiwayatController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -63,4 +66,25 @@ Route::middleware(['auth', 'role:pasien'])->prefix('pasien')->group(function () 
 
     Route::post('/daftar', [PasienPoliController::class, 'submit'])
         ->name('pasien.daftar.submit');
+});
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
+});
+
+Route::middleware(['auth'])->group(function () {
+    // Export untuk Admin
+    Route::get('/admin/export/dokter', [ExportController::class, 'exportDokter'])->name('admin.export.dokter');
+    Route::get('/admin/export/pasien', [ExportController::class, 'exportPasien'])->name('admin.export.pasien');
+    Route::get('/admin/export/obat', [ExportController::class, 'exportObat'])->name('admin.export.obat');
+
+    // Export untuk Dokter
+    Route::get('/dokter/export/jadwal', [ExportController::class, 'exportJadwal'])->name('dokter.export.jadwal');
+    Route::get('/dokter/export/riwayat', [ExportController::class, 'exportRiwayatPasien'])->name('dokter.export.riwayat');
+});
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/pasien/riwayat', [RiwayatController::class, 'index'])->name('pasien.riwayat.index');
+    Route::get('/pasien/riwayat/{id}', [RiwayatController::class, 'show'])->name('pasien.riwayat.show');
 });

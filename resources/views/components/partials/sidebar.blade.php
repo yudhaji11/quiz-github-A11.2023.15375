@@ -101,6 +101,12 @@
                 <i class="fas fa-house-medical w-4 text-center"></i>
                 Pendaftaran Periksa
             </a>
+            <a href="{{ route('pasien.riwayat.index') }}"
+                class="{{ ($baseLink ?? '') . (request()->routeIs('pasien.riwayat') ? $active : $inactive) }}">
+                <i class="fas fa-house-medical w-4 text-center"></i>
+                Riwayat Pendaftaran
+            </a>
+            
         </div>
         @endif
 

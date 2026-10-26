@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
+use App\Models\Periksa;
+use App\Models\JadwalPeriksa;
 
 class DaftarPoli extends Model
 {
@@ -31,6 +33,11 @@ class DaftarPoli extends Model
     public function jadwalPeriksa()
     {
         return $this->belongsTo(JadwalPeriksa::class, 'id_jadwal');
+    }
+
+   public function periksa()
+    {
+        return $this->hasOne(Periksa::class, 'id_daftar_poli');
     }
 
     public function periksas()

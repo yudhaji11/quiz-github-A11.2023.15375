@@ -14,7 +14,10 @@
             Tambah Obat
         </a>
     </div>
-
+<!-- Eksport Excel -->
+        <a href="{{ route('admin.export.obat') }}" class="btn btn-success btn-sm text-white gap-2">
+            <i class="fas fa-file-excel"></i> Export Excel
+        </a>
     {{-- Card --}}
     <div class="card bg-base-100 shadow-md rounded-2 border">
         <div class="card-body p-0">
