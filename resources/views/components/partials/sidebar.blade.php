@@ -78,6 +78,13 @@
                 <i class="fas fa-pills w-4 text-center"></i>
                 Manajemen Obat
             </a>
+
+            <a href="{{ route('admin.pembayaran.index') }}"
+                class="{{ $baseLink }} {{ request()->routeIs('admin.pembayaran.*') ? $active : $inactive }}">
+                <i class="fas fa-money-check-alt"></i>
+                Verifikasi Pembayaran
+            </a>
+
         </div>
         @endif
 
@@ -101,10 +108,17 @@
                 <i class="fas fa-house-medical w-4 text-center"></i>
                 Pendaftaran Periksa
             </a>
+
             <a href="{{ route('pasien.riwayat.index') }}"
                 class="{{ ($baseLink ?? '') . (request()->routeIs('pasien.riwayat') ? $active : $inactive) }}">
-                <i class="fas fa-house-medical w-4 text-center"></i>
+                <i class="fas fa-history"></i>
                 Riwayat Pendaftaran
+            </a>
+
+            <a href="{{ route('pasien.pembayaran.index') }}"
+                class="{{ ($baseLink ?? '') . (request()->routeIs('pasien.pembayaran') ? $active : $inactive) }}">
+                <i class="fas fa-credit-card"></i>
+                Pembayaran
             </a>
             
         </div>

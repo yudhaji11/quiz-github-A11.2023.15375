@@ -13,6 +13,8 @@ use App\Http\Controllers\Pasien\PasienPoliController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\Pasien\RiwayatController;
+use App\Http\Controllers\PembayaranController;
+
 use Illuminate\Support\Facades\Route;
 
 
@@ -87,4 +89,14 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::get('/pasien/riwayat', [RiwayatController::class, 'index'])->name('pasien.riwayat.index');
     Route::get('/pasien/riwayat/{id}', [RiwayatController::class, 'show'])->name('pasien.riwayat.show');
+});
+
+Route::middleware(['auth'])->group(function () {
+    // Rute Pembayaran Pasien
+    Route::get('/pasien/pembayaran', [PembayaranController::class, 'indexPasien'])->name('pasien.pembayaran.index');
+    Route::post('/pasien/pembayaran/{id}/upload', [PembayaranController::class, 'uploadBukti'])->name('pasien.pembayaran.upload');
+
+    // Rute Verifikasi Pembayaran Admin
+    Route::get('/admin/pembayaran', [PembayaranController::class, 'indexAdmin'])->name('admin.pembayaran.index');
+    Route::put('/admin/pembayaran/{id}/konfirmasi', [PembayaranController::class, 'konfirmasiAdmin'])->name('admin.pembayaran.konfirmasi');
 });
