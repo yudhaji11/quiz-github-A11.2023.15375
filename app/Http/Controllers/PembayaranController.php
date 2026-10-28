@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
+use App\Notifications\PembayaranDiverifikasi;
+use App\Notifications\BuktiPembayaranUploaded;
+
 class PembayaranController extends Controller
 {
     // ==========================================
@@ -27,7 +30,7 @@ class PembayaranController extends Controller
     }
 
     // Proses upload bukti pembayaran oleh pasien
-    public function uploadBukti(Request $request, $id)
+   public function uploadBukti(Request $request, $id)
     {
         $request->validate([
             'bukti_pembayaran' => 'required|image|mimes:jpeg,png,jpg|max:2048',
@@ -38,21 +41,23 @@ class PembayaranController extends Controller
             'bukti_pembayaran.max' => 'Ukuran file maksimal 2 MB.',
         ]);
 
-        // Pastikan tagihan ini milik pasien yang login
-        $periksa = Periksa::whereHas('daftarPoli', function ($query) {
-            $query->where('id_pasien', Auth::id());
-        })->findOrFail($id);
+        // Kunci akses: hanya cari tagihan yang benar-benar milik pasien yang sedang login
+        $periksa = Periksa::with('daftarPoli.jadwalPeriksa.dokter')
+            ->whereHas('daftarPoli', function ($query) {
+                $query->where('id_pasien', auth()->id());
+            })
+            ->findOrFail($id);
 
         if ($periksa->status_pembayaran === 'lunas') {
             return back()->with('error', 'Tagihan ini sudah lunas.');
         }
 
-        // Hapus file bukti lama jika sebelumnya pernah upload tapi belum diverifikasi
+        // Hapus file lama jika sebelumnya pernah upload
         if ($periksa->bukti_pembayaran && Storage::disk('public')->exists($periksa->bukti_pembayaran)) {
             Storage::disk('public')->delete($periksa->bukti_pembayaran);
         }
 
-        // Simpan file ke folder storage/app/public/bukti_pembayaran
+        // Simpan file baru
         $path = $request->file('bukti_pembayaran')->store('bukti_pembayaran', 'public');
 
         $periksa->update([
@@ -61,9 +66,14 @@ class PembayaranController extends Controller
             'tgl_bayar' => now(),
         ]);
 
+        // Kirim Notifikasi ke Dokter Pemeriksa
+        $dokter = $periksa->daftarPoli->jadwalPeriksa->dokter ?? null;
+        if ($dokter) {
+            $dokter->notify(new BuktiPembayaranUploaded($periksa));
+        }
+
         return back()->with('success', 'Bukti pembayaran berhasil diunggah. Menunggu verifikasi admin.');
     }
-
     // ==========================================
     // SISI ADMIN
     // ==========================================
@@ -84,13 +94,19 @@ class PembayaranController extends Controller
     }
 
     // Aksi admin mengonfirmasi pembayaran menjadi LUNAS
-    public function konfirmasiAdmin($id)
+   public function konfirmasiAdmin($id)
     {
-        $periksa = Periksa::findOrFail($id);
+        $periksa = Periksa::with('daftarPoli.pasien')->findOrFail($id);
 
         $periksa->update([
             'status_pembayaran' => 'lunas',
         ]);
+
+        // Kirim Notifikasi ke Pasien
+        $pasien = $periksa->daftarPoli->pasien ?? null;
+        if ($pasien) {
+            $pasien->notify(new PembayaranDiverifikasi($periksa));
+        }
 
         return back()->with('success', 'Pembayaran berhasil diverifikasi dan berstatus LUNAS.');
     }

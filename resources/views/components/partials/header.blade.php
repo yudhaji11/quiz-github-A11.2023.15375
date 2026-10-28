@@ -15,6 +15,59 @@
             </span>
         </div>
     </div>
+    
+    @php
+        $unreadNotifications = auth()->user()->unreadNotifications;
+        $unreadCount = $unreadNotifications->count();
+    @endphp
+
+    <div class="dropdown dropdown-end mr-3">
+        <div tabindex="0" role="button" class="btn btn-ghost btn-circle relative">
+            <i class="fas fa-bell text-lg"></i>
+            @if($unreadCount > 0)
+                <span class="badge badge-error badge-xs absolute top-2 right-2 p-1 text-[10px] text-white font-bold animate-pulse">
+                    {{ $unreadCount > 9 ? '9+' : $unreadCount }}
+                </span>
+            @endif
+        </div>
+
+        <div tabindex="0" class="dropdown-content z-[50] card card-compact w-80 p-0 shadow-lg bg-base-100 border border-base-200 mt-2">
+            <div class="card-body p-3">
+                <div class="flex items-center justify-between border-b border-base-200 pb-2 mb-1">
+                    <span class="font-bold text-sm">Notifikasi ({{ $unreadCount }})</span>
+                    @if($unreadCount > 0)
+                        <form action="{{ route('notifications.markAllRead') }}" method="POST">
+                            @csrf
+                            <button type="submit" class="text-xs text-primary hover:underline">Tandai semua dibaca</button>
+                        </form>
+                    @endif
+                </div>
+
+                <div class="max-h-72 overflow-y-auto divide-y divide-base-200">
+                    @forelse(auth()->user()->notifications()->take(6)->get() as $notif)
+                        <a href="{{ route('notifications.read', $notif->id) }}" 
+                        class="block p-2 hover:bg-base-200/50 rounded transition-colors {{ $notif->read_at ? 'opacity-60' : 'bg-primary/5 font-medium' }}">
+                            <div class="flex items-start gap-2">
+                                <div class="mt-1 text-primary">
+                                    <i class="{{ $notif->data['icon'] ?? 'fas fa-info-circle' }}"></i>
+                                </div>
+                                <div class="flex-1 text-xs">
+                                    <div class="font-bold text-base-content">{{ $notif->data['title'] ?? 'Info' }}</div>
+                                    <div class="text-base-content/80 text-[11px] leading-tight mt-0.5">{{ $notif->data['pesan'] ?? '' }}</div>
+                                    <div class="text-[10px] text-base-content/40 mt-1">{{ $notif->created_at->diffForHumans() }}</div>
+                                </div>
+                            </div>
+                        </a>
+                    @empty
+                        <div class="text-center py-6 text-base-content/40 text-xs">
+                            <i class="far fa-bell-slash text-2xl mb-1 block"></i>
+                            Tidak ada notifikasi
+                        </div>
+                    @endforelse
+                </div>
+            </div>
+        </div>
+    </div>
 
     {{-- Fullscreen --}}
     <button onclick="toggleFullscreen()" class="btn btn-square btn-ghost">
@@ -56,7 +109,7 @@
             </li>
 
             <div class="divider my-1"></div>
-
+            
             {{-- Logout --}}
             <li>
                 <form action="{{ route('logout') }}" method="POST" class="p-0">

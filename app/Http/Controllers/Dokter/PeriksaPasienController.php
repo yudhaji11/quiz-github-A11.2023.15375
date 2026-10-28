@@ -9,6 +9,7 @@ use App\Models\Obat;
 use App\Models\Periksa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Events\AntrianUpdated;
 
 class PeriksaPasienController extends Controller
 {
@@ -47,6 +48,7 @@ class PeriksaPasienController extends Controller
             'tgl_periksa' => now(),
             'catatan' => $request->catatan,
             'biaya_periksa' => $request->biaya_periksa + 150000,
+            'status_pembayaran' => 'belum_bayar',
         ]);
 
         if (is_array($obatIds)) {
@@ -57,9 +59,14 @@ class PeriksaPasienController extends Controller
                 ]);
             }
         }
-
+       
+        $daftarPoli = $periksa->daftarPoli;
+        if ($daftarPoli) {
+            broadcast(new \App\Events\AntrianUpdated($daftarPoli->id_jadwal));
+        }
         return redirect()
             ->route('periksa-pasien.index')
             ->with('success', 'Data periksa berhasil disimpan.');
     }
+    
 }

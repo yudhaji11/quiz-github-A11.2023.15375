@@ -7,18 +7,17 @@
         <span class="text-slate-600 font-medium">Daftar Poli</span>
     </div>
 
+    {{-- Alert Notifikasi --}}
+        @if (session('message'))
+            <div class="alert alert-success bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-xl mb-6 text-sm flex items-center gap-2">
+                <i class="fas fa-check-circle text-base"></i>
+                <span>{{ session('message') }}</span>
+            </div>
+        @endif
     {{-- Card Container Tengah --}}
     <div class="flex justify-center items-center">
         <div class="card w-full max-w-2xl bg-base-100 shadow-sm rounded-2xl border border-slate-100">
             <div class="card-body p-8 sm:p-10">
-
-                {{-- Alert Notifikasi --}}
-                @if (session('message'))
-                    <div class="alert alert-success bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-xl mb-6 text-sm flex items-center gap-2">
-                        <i class="fas fa-check-circle text-base"></i>
-                        <span>{{ session('message') }}</span>
-                    </div>
-                @endif
 
                 {{-- Judul Form --}}
                 <div class="flex items-center justify-center gap-2 mb-8">
@@ -95,17 +94,19 @@
                     </div>
 
                     {{-- Keluhan --}}
-                    <div class="form-control mb-8">
-                        <label class="label pb-1.5" for="keluhan">
-                            <span class="text-xs font-semibold text-slate-600">Keluhan</span>
+                    <div class="form-control mb-4">
+                        <label class="label">
+                            <span class="label-text font-semibold">
+                                Keluhan Penyakit<span class="text-red-500">*</span>
+                            </span>
                         </label>
-                        <textarea name="keluhan" id="keluhan" rows="4" 
-                            placeholder="Tulis keluhan anda..."
-                            class="textarea textarea-bordered w-full rounded-lg text-sm text-slate-700 border-slate-200 focus:border-blue-600">{{ old('keluhan') }}</textarea>
+                        <textarea 
+                            name="keluhan" 
+                            class="textarea textarea-bordered h-24 w-full" 
+                            placeholder="Tuliskan keluhan atau gejala yang Anda rasakan..." 
+                            required>{{ old('keluhan') }}</textarea>
                         @error('keluhan')
-                            <label class="label pt-1">
-                                <span class="label-text-alt text-red-500 text-xs">{{ $message }}</span>
-                            </label>
+                            <span class="text-error text-xs mt-1">{{ $message }}</span>
                         @enderror
                     </div>
 
